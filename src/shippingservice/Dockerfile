@@ -1,3 +1,4 @@
+FROM gcr.io/microservices-demo-app/grpc-health-probe:1.0 AS probe
 FROM golang:1.10-alpine as builder
 RUN apk add --no-cache ca-certificates git && \
       wget -qO/go/bin/dep https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 && \
@@ -15,6 +16,7 @@ RUN go install .
 FROM alpine as release
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /go/bin/shippingservice /shippingservice
+COPY --from=probe   /bin/grpc_health_probe /bin/grpc_health_probe
 ENV APP_PORT=50051
 EXPOSE 50051
 ENTRYPOINT ["/shippingservice"]
