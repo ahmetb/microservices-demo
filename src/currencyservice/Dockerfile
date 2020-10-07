@@ -43,4 +43,7 @@ COPY . .
 
 EXPOSE 7000
 
-ENTRYPOINT [ "node", "server.js" ]
+ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.6/runsd /bin/runsd
+RUN chmod +x /bin/runsd
+ENTRYPOINT ["runsd", "-v=5", "--", "node", "server.js"]
+

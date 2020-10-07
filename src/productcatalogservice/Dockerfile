@@ -36,5 +36,7 @@ WORKDIR /productcatalogservice
 COPY --from=builder /productcatalogservice ./server
 COPY products.json .
 EXPOSE 3550
-ENTRYPOINT ["/productcatalogservice/server"]
 
+ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.6/runsd /bin/runsd
+RUN chmod +x /bin/runsd
+ENTRYPOINT ["runsd", "-v=5", "--", "/productcatalogservice/server" ]

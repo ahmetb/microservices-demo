@@ -34,4 +34,7 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.2.0 && \
     chmod +x /bin/grpc_health_probe
 COPY --from=builder /checkoutservice /checkoutservice
 EXPOSE 5050
-ENTRYPOINT ["/checkoutservice"]
+ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.6/runsd /bin/runsd
+RUN chmod +x /bin/runsd
+ENTRYPOINT ["runsd", "-v=5", "--", "/checkoutservice"]
+

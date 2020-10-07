@@ -49,4 +49,7 @@ COPY --from=builder /usr/local/lib/python3.7/ /usr/local/lib/python3.7/
 COPY . .
 
 EXPOSE 8080
-ENTRYPOINT [ "python", "email_server.py" ]
+
+ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.6/runsd /bin/runsd
+RUN chmod +x /bin/runsd
+ENTRYPOINT ["runsd", "-v=5", "--", "python", "email_server.py"]

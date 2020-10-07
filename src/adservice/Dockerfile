@@ -44,4 +44,6 @@ WORKDIR /app
 COPY --from=builder /app .
 
 EXPOSE 9555
-ENTRYPOINT ["/app/build/install/hipstershop/bin/AdService"]
+ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.6/runsd /bin/runsd
+RUN chmod +x /bin/runsd
+ENTRYPOINT ["runsd", "-v=5", "--", "/app/build/install/hipstershop/bin/AdService"]

@@ -34,4 +34,7 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.2.0 && \
 COPY --from=builder /go/bin/shippingservice /shippingservice
 ENV APP_PORT=50051
 EXPOSE 50051
-ENTRYPOINT ["/shippingservice"]
+
+ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.6/runsd /bin/runsd
+RUN chmod +x /bin/runsd
+ENTRYPOINT ["runsd", "-v=5", "--", "/shippingservice"]
