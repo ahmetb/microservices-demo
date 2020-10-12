@@ -50,6 +50,6 @@ COPY . .
 
 EXPOSE 8080
 
-ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.7/runsd /bin/runsd
+ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.8/runsd /bin/runsd
 RUN chmod +x /bin/runsd
 ENTRYPOINT ["runsd", "-v=5", "--", "python", "email_server.py"]

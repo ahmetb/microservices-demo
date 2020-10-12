@@ -35,6 +35,6 @@ COPY --from=builder /go/bin/shippingservice /shippingservice
 ENV APP_PORT=50051
 EXPOSE 50051
 
-ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.7/runsd /bin/runsd
+ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.8/runsd /bin/runsd
 RUN chmod +x /bin/runsd
 ENTRYPOINT ["runsd", "-v=5", "--", "/shippingservice"]
