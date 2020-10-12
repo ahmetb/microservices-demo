@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:8-alpine as base
+FROM node:12-alpine as base
 
 FROM base as builder
 
@@ -31,6 +31,11 @@ RUN npm install --only=production
 
 FROM base
 
+RUN apk update && apk --no-cache add ca-certificates wget
+RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.30-r0/glibc-2.30-r0.apk
+RUN apk add glibc-2.30-r0.apk
+
 RUN GRPC_HEALTH_PROBE_VERSION=v0.2.0 && \
     wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
     chmod +x /bin/grpc_health_probe
@@ -43,6 +48,6 @@ COPY . .
 
 EXPOSE 50051
 
-ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.6/runsd /bin/runsd
+ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.7/runsd /bin/runsd
 RUN chmod +x /bin/runsd
 ENTRYPOINT ["runsd", "-v=5", "--", "node", "index.js" ]

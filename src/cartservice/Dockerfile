@@ -41,6 +41,6 @@ RUN apk add --no-cache \
 WORKDIR /app
 COPY --from=builder /cartservice .
 
-ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.6/runsd /bin/runsd
+ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.7/runsd /bin/runsd
 RUN chmod +x /bin/runsd
 ENTRYPOINT ["runsd", "-v=5", "--", "/app/cartservice", "start"]

@@ -37,6 +37,6 @@ ENV PORT "8080"
 EXPOSE 8080
 
 
-ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.6/runsd /bin/runsd
+ADD https://github.com/ahmetb/runsd/releases/download/v0.0.0-rc.7/runsd /bin/runsd
 RUN chmod +x /bin/runsd
 ENTRYPOINT ["runsd", "-v=5", "--", "python", "/recommendationservice/recommendation_server.py"]
