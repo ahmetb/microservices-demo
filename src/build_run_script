@@ -1,0 +1,110 @@
+#/usr/bin/env bash
+set -e
+
+# image builds
+
+gcloud builds submit -t gcr.io/ahmetb-demo/ms-runsd/adservice ./adservice
+gcloud builds submit -t gcr.io/ahmetb-demo/ms-runsd/cartservice ./cartservice
+gcloud builds submit -t gcr.io/ahmetb-demo/ms-runsd/checkoutservice ./checkoutservice
+gcloud builds submit -t gcr.io/ahmetb-demo/ms-runsd/currencyservice ./currencyservice
+gcloud builds submit -t gcr.io/ahmetb-demo/ms-runsd/emailservice ./emailservice
+gcloud builds submit -t gcr.io/ahmetb-demo/ms-runsd/frontend ./frontend
+gcloud builds submit -t gcr.io/ahmetb-demo/ms-runsd/paymentservice ./paymentservice
+gcloud builds submit -t gcr.io/ahmetb-demo/ms-runsd/productcatalogservice ./productcatalogservice
+gcloud builds submit -t gcr.io/ahmetb-demo/ms-runsd/recommendationservice ./recommendationservice
+gcloud builds submit -t gcr.io/ahmetb-demo/ms-runsd/shippingservice ./shippingservice
+
+
+# deploys
+
+run gcr.io/ahmetb-demo/ms-runsd/currencyservice currencyservice \
+    --no-allow-unauthenticated \
+    --set-env-vars=DISABLE_TRACING=1 \
+    --set-env-vars=DISABLE_PROFILER=1 \
+    --set-env-vars=DISABLE_DEBUGGER=1 \
+    --set-env-vars=CLOUD_RUN_PROJECT_HASH=2wvlk7vg3a &
+
+run gcr.io/ahmetb-demo/ms-runsd/paymentservice paymentservice \
+    --no-allow-unauthenticated \
+    --set-env-vars=DISABLE_TRACING=1 \
+    --set-env-vars=DISABLE_PROFILER=1 \
+    --set-env-vars=DISABLE_DEBUGGER=1 \
+    --set-env-vars=CLOUD_RUN_PROJECT_HASH=2wvlk7vg3a &
+
+
+run gcr.io/ahmetb-demo/ms-runsd/productcatalogservice productcatalogservice \
+    --no-allow-unauthenticated \
+    --set-env-vars=DISABLE_TRACING=1 \
+    --set-env-vars=DISABLE_PROFILER=1 \
+    --set-env-vars=DISABLE_DEBUGGER=1 \
+    --set-env-vars=CLOUD_RUN_PROJECT_HASH=2wvlk7vg3a &
+
+run gcr.io/ahmetb-demo/ms-runsd/adservice adservice \
+    --no-allow-unauthenticated \
+    --set-env-vars=DISABLE_TRACING=1 \
+    --set-env-vars=DISABLE_PROFILER=1 \
+    --set-env-vars=DISABLE_DEBUGGER=1 \
+    --set-env-vars=CLOUD_RUN_PROJECT_HASH=2wvlk7vg3a &
+
+
+run gcr.io/ahmetb-demo/ms-runsd/emailservice emailservice \
+    --no-allow-unauthenticated \
+    --set-env-vars=DISABLE_TRACING=1 \
+    --set-env-vars=DISABLE_PROFILER=1 \
+    --set-env-vars=DISABLE_DEBUGGER=1 \
+    --set-env-vars=CLOUD_RUN_PROJECT_HASH=2wvlk7vg3a &
+
+run gcr.io/ahmetb-demo/ms-runsd/shippingservice shippingservice \
+    --no-allow-unauthenticated \
+    --set-env-vars=DISABLE_TRACING=1 \
+    --set-env-vars=DISABLE_PROFILER=1 \
+    --set-env-vars=DISABLE_DEBUGGER=1 \
+    --set-env-vars=CLOUD_RUN_PROJECT_HASH=2wvlk7vg3a &
+
+run gcr.io/ahmetb-demo/ms-runsd/cartservice cartservice \
+    --no-allow-unauthenticated \
+    --vpc-connector=default-vpc-connector-uc1 \
+    --set-env-vars=DISABLE_TRACING=1 \
+    --set-env-vars=DISABLE_PROFILER=1 \
+    --set-env-vars=DISABLE_DEBUGGER=1 \
+    --set-env-vars=REDIS_ADDR=192.168.0.3:6379 \
+    --set-env-vars=CLOUD_RUN_PROJECT_HASH=2wvlk7vg3a &
+
+run gcr.io/ahmetb-demo/ms-runsd/recommendationservice recommendationservice \
+    --no-allow-unauthenticated \
+    --set-env-vars=DISABLE_TRACING=1 \
+    --set-env-vars=DISABLE_PROFILER=1 \
+    --set-env-vars=DISABLE_DEBUGGER=1 \
+    --set-env-vars=PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:80 \
+    --set-env-vars=CLOUD_RUN_PROJECT_HASH=2wvlk7vg3a &
+
+run gcr.io/ahmetb-demo/ms-runsd/checkoutservice checkoutservice \
+    --no-allow-unauthenticated \
+    --set-env-vars=DISABLE_TRACING=1 \
+    --set-env-vars=DISABLE_PROFILER=1 \
+    --set-env-vars=DISABLE_DEBUGGER=1 \
+    --set-env-vars=PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:80 \
+    --set-env-vars=SHIPPING_SERVICE_ADDR=shippingservice:80 \
+    --set-env-vars=PAYMENT_SERVICE_ADDR=paymentservice:80 \
+    --set-env-vars=CURRENCY_SERVICE_ADDR=currencyservice:80 \
+    --set-env-vars=CART_SERVICE_ADDR=cartservice:80 \
+    --set-env-vars=EMAIL_SERVICE_ADDR=emailservice:80 \
+    --set-env-vars=CLOUD_RUN_PROJECT_HASH=2wvlk7vg3a &
+
+
+run gcr.io/ahmetb-demo/ms-runsd/frontend frontend \
+    --allow-unauthenticated \
+    --set-env-vars=DISABLE_TRACING=1 \
+    --set-env-vars=DISABLE_PROFILER=1 \
+    --set-env-vars=DISABLE_DEBUGGER=1 \
+    --set-env-vars=PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:80 \
+    --set-env-vars=SHIPPING_SERVICE_ADDR=shippingservice:80 \
+    --set-env-vars=PAYMENT_SERVICE_ADDR=paymentservice:80 \
+    --set-env-vars=CURRENCY_SERVICE_ADDR=currencyservice:80 \
+    --set-env-vars=RECOMMENDATION_SERVICE_ADDR=recommendationservice:80 \
+    --set-env-vars=CART_SERVICE_ADDR=cartservice:80 \
+    --set-env-vars=CHECKOUT_SERVICE_ADDR=checkoutservice:80 \
+    --set-env-vars=AD_SERVICE_ADDR=adservice:80 \
+    --set-env-vars=ENV_PLATFORM=gcp \
+    --set-env-vars=CLOUD_RUN_PROJECT_HASH=2wvlk7vg3a &
+
